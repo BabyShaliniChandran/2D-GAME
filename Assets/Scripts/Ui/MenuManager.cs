@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 public class MenuManager : MonoBehaviour
 {
     [SerializeField] private RectTransform arrow;
-    [SerializeField] private RectTransform[] buttons; // Size = 2 (Start, Quit)
+    [SerializeField] private RectTransform[] buttons;
     [SerializeField] private AudioClip changeSound;
     [SerializeField] private AudioClip interactSound;
 
@@ -32,10 +32,10 @@ public class MenuManager : MonoBehaviour
 
     public void ChangePosition(int change)
     {
-        currentPosition += change;
+        if (change != 0 && MainMenuSoundManager.instance != null)
+            MainMenuSoundManager.instance.PlaySound(changeSound);
 
-        if (change != 0)
-            SoundManager.instance.PlaySound(changeSound);
+        currentPosition += change;
 
         if (currentPosition < 0)
             currentPosition = buttons.Length - 1;
@@ -53,37 +53,41 @@ public class MenuManager : MonoBehaviour
         );
     }
 
-    // ---------------- KEYBOARD ----------------
+    // ---------------- INPUT ----------------
 
     private void Interact()
     {
-        SoundManager.instance.PlaySound(interactSound);
 
         if (currentPosition == 0)
-        {
             StartGame();
-        }
         else if (currentPosition == 1)
-        {
             QuitGame();
-        }
     }
 
-    // ---------------- BUTTON OnClick ----------------
+    // ---------------- ACTIONS ----------------
+
 
     public void StartGame()
     {
-        SoundManager.instance.PlaySound(interactSound);
+        if (MainMenuSoundManager.instance != null)
+            MainMenuSoundManager.instance.StopMusic();
+
         SceneManager.LoadScene("Level1");
     }
-
     public void QuitGame()
     {
-        SoundManager.instance.PlaySound(interactSound);
-        Application.Quit();
+        if (MainMenuSoundManager.instance != null)
+            MainMenuSoundManager.instance.StopMusic();
+
+#if UNITYWEBGL
+        Debug.Log("Quit not supported in WebGL");
+#else
+    Application.Quit();
+#endif
 
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
 #endif
     }
+
 }

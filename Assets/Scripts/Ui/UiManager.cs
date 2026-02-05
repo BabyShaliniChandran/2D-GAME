@@ -63,7 +63,7 @@ public class UiManager : MonoBehaviour
             SoundManager.instance.musicSource.UnPause();
         }
 
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene("_MainMenu");
     }
 
 

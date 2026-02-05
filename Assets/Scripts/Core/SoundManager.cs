@@ -1,3 +1,4 @@
+using System;
 using UnityEditor;
 using UnityEngine;
 
@@ -12,18 +13,18 @@ public class SoundManager : MonoBehaviour
 
         source = GetComponent<AudioSource>();
         musicSource =transform.GetChild(0).GetComponent<AudioSource>();
-
+        
         //Keep this object even when we go to new scene
         if (instance == null)
         {
             instance = this;
-            DontDestroyOnLoad(transform.root.gameObject);
+            //DontDestroyOnLoad(transform.root.gameObject);
 
         }
         //Destroy duplicate gameobjects
         else if (instance != null && instance != this)
             Destroy(transform.root.gameObject);
-
+        //
         ChangeSoundVolume(0);
         ChangeMusicVolume(0);
     }
@@ -59,6 +60,11 @@ public class SoundManager : MonoBehaviour
         //save final value to player prefs
 
         PlayerPrefs.SetFloat(volumeName, currentVolume);
+    }
+
+    public static implicit operator SoundManager(MainMenuSoundManager v)
+    {
+        throw new NotImplementedException();
     }
 
 }
